@@ -1,0 +1,5 @@
+<h1><?php echo $this->translate('Latest Posts'); ?></h1>
+<?php foreach ($this->Posts as $post) : ?>
+	<h2><?php echo $post->getTitle() ?></h2>
+	<div><?php echo $post->getContent() ?></div>
+<?php endforeach; ?>
