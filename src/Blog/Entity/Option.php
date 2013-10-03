@@ -49,14 +49,37 @@ class Option
      * @ORM\Column(type="string")
      */
 	protected $value;
+
+	public function getKey()
+	{
+		return $this->key;
+	}
+	
+	public function setKey($key)
+	{
+		// strtolower is not really needed for case-insensitive databases
+		// however I guess it is not a bad practice to consider it may be
+		// case-sensitive 
+		$this->key = strtolower($key);
+		return $this;
+	}
 	
 	/**
 	 * Get the value
 	 * 
-	 * @return string|array
+	 * @return mixed
 	 */
 	public function getValue()
 	{
-		return $this->value;
+		// Userialize the value
+		return unserialize($this->value);
 	}
+	
+	public function setValue( $value )
+	{
+		// Always serialize the value
+		$this->value = serialize($value);
+		return $this;
+	}
+	
 }

@@ -22,27 +22,16 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
-namespace Blog\Form;
+namespace Blog\Service\Factory;
 
-use Zend\Form\Form;
-use Zend\Form\Element\Csrf;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Blog\Service\OptionService;
 
-class CreatePost extends Form
+class OptionServiceFactory implements FactoryInterface
 {
-
-    public function __construct()
-    {
-        parent::__construct('create-post-form');
-
-        $this->add(new Csrf('csrf'));
-
-        $this->add(array(
-            'name'       => 'submit',
-            'attributes' => array(
-                'type'  => 'submit',
-                'value' => 'Save'
-            )
-        ));
-    }
-
+	public function createService(ServiceLocatorInterface $serviceLocator)
+	{
+		return new OptionService($serviceLocator, 'Blog\Entity\Option');
+	}
 }

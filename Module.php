@@ -101,7 +101,9 @@ class Module implements
 	{
 		return array(
 			'factories' => array(
-				'Blog\Service\PostService' => 'Blog\Service\PostServiceFactory',
+				'Blog\Service\PostService'     => 'Blog\Service\Factory\PostServiceFactory',
+				'Blog\Service\OptionService'   => 'Blog\Service\Factory\OptionServiceFactory',
+				'Blog\Service\LanguageService' => 'Blog\Service\Factory\LanguageServiceFactory',
 			),
 		);
 	}

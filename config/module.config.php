@@ -37,6 +37,20 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                	'category' => array(
+						'type'    => 'Segment',
+						'options' => array(
+							'route' => '/[:category]',
+							'constraints' => array(
+                                'category' => '[a-zA-Z0-9-]*',
+                            ),
+                			'defaults' => array(
+	                        	'__NAMESPACE__' => 'Blog\Controller',
+	                        	'controller'    => 'Frontend',
+	                        	'action'        => 'category',
+	                    	),
+						),
+                    ),
                 	'post' => array(
                 		'type'    => 'Regex',
 						'options' => array(

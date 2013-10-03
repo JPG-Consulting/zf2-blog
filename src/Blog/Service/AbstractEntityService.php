@@ -22,27 +22,42 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
-namespace Blog\Form;
+namespace Blog\Service;
 
-use Zend\Form\Form;
-use Zend\Form\Element\Csrf;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class CreatePost extends Form
+abstract class AbstractEntityService
 {
+	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @var Zend\ServiceManager\ServiceManager
+	 */
+	protected $serviceManager;
+	
+	/**
+	 * The entity manager
+	 * @var Doctrine\ORM\EntityManager
+	 */
+	protected $entityManager;
 
-    public function __construct()
-    {
-        parent::__construct('create-post-form');
-
-        $this->add(new Csrf('csrf'));
-
-        $this->add(array(
-            'name'       => 'submit',
-            'attributes' => array(
-                'type'  => 'submit',
-                'value' => 'Save'
-            )
-        ));
-    }
-
+	/**
+	 * The repository
+	 * @return Doctrine\Orm\EntityRepository
+	 */
+	protected $repository;
+	
+	
+	public function __construct(ServiceLocatorInterface $serviceManager, $repository)
+	{
+		// Service manager
+		$this->serviceManager = $serviceManager;
+		// Now for the repository
+		$this->entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
+		$this->repository = $this->entityManager->getRepository($repository);
+	}
+	
+	
+	
 }

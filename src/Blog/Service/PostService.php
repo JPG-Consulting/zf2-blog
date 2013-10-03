@@ -1,4 +1,27 @@
 <?php
+/**
+ * Blog
+ * 
+ * A blog module.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *  
+ * @author Juan Pedro Gonzalez Gutierrez
+ * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
+ */
 namespace Blog\Service;
 
 use Zend\ServiceManager\ServiceManager;
@@ -13,54 +36,15 @@ use Zend\EventManager\EventManagerAwareInterface;
 
 use Blog\Entity\Post as PostEntity;
 
-class PostService implements EventManagerAwareInterface
-{
-	/**
-	 * 
-	 * Enter description here ...
-	 * @var Zend\ServiceManager\ServiceManager
-	 */
-	protected $serviceManager;
-	/**
-	 * The entity manager
-	 * @var Doctrine\ORM\EntityManager
-	 */
-	protected $entityManager;
-	
-	protected $repository;
+class PostService extends AbstractEntityService implements EventManagerAwareInterface
+{	
 	
 	/**
-	 * EventManager instance
+	 * The EventManager instance 
 	 * 
-     * @var EventManagerInterface
-     */
+	 * @var EventManagerInterface
+	 */
 	protected $events;
-	
-	public function __construct(ServiceManager $serviceManager)
-	{
-		$this->serviceManager = $serviceManager;
-	}
-	
-	public function getEntityManager()
-	{
-		if (null === $this->entityManager) {
-			$this->entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
-		}
-		return $this->entityManager;
-	}
-	
-	/**
-	 * Get the Doctrine repository for posts.
-	 * 
-	 * @return \Blog\Repository\Post 
-	 */
-	public function getRepository()
-	{
-		if (null === $this->repository) {
-			$this->repository = $this->getEntityManager()->getRepository('Blog\Entity\Post');
-		}
-		return $this->repository;
-	}
 	
 	/**
      * Set the event manager instance used by this module manager.
@@ -94,28 +78,19 @@ class PostService implements EventManagerAwareInterface
         return $this->events;
 	}
 	
-	protected function getLanguage()
-	{
-		$translator = $this->serviceManager->get('translator');
-		$locale = $translator->getLocale();
-		// Normalize...
-		// ZF-2 usualy return language_region
-		// but \Locale return language-region
-		$locale = preg_replace('/_/', '-', $locale);
-		$locale = explode('-', $locale, 2);
-		return $locale[0];
-	}
-	
 	/**
 	 * Takes a post ID and returns the database record for that post.
 	 * 
 	 * @param mixed $id
 	 */
 	public function getPost( $id, $language_code = null )
-	{
-		if (empty($language_code)) $language_code = $this->getLanguage();
+	{	
+		if (empty($language_code)) {
+			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
+			$language_code = $languageService->getCurrent()->getId();
+		} 
 		
-		$post = $this->getRepository()->findOneBy(array('language_code' => $language_code, 'slug' => $id));
+		$post = $this->repository->findOneBy(array('language_code' => $language_code, 'slug' => $id));
 		
 		// Trigger an event
 		// Allows developers to modify the post object immediately after being queried and setup.
@@ -143,12 +118,18 @@ class PostService implements EventManagerAwareInterface
 	 * @param array $args
 	 */
 	public function getPosts( $args = array() )
-	{
+	{	
 		// Criteria...
 		$criteria = array(
-			'status' => isset($args['post_status']) ? $args['post_status'] : 'publish',
-			'type'   => isset($args['post_type'])   ? $args['post_type']   : 'post',
+			'status'   => isset($args['post_status']) ? $args['post_status'] : 'publish',
+			'type'     => isset($args['post_type'])   ? $args['post_type']   : 'post',
 		);
+		
+		// Language
+		if (!isset($args['language'])) {
+			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
+			$criteria['language_code'] = $languageService->getCurrent()->getId();
+		}
 		
 		// Order By...
 		$orderBy = isset($args['orderby']) ? $args['orderby'] : array('created' => 'DESC');
@@ -182,7 +163,7 @@ class PostService implements EventManagerAwareInterface
 		if ($offset < 1) $offset = null;
 		
 		// Get them!
-		$posts = $this->getRepository()->findBy($criteria, $orderBy, $limit, $offset);
+		$posts = $this->repository->findBy($criteria, $orderBy, $limit, $offset);
 		
 		// TODO: Decide if we trigger an event here
 		
@@ -200,7 +181,7 @@ class PostService implements EventManagerAwareInterface
 		// Modified date
 		$post->modified = new DateTime(date('Y-m-d H:i:s', time()));
 			
-		$this->getEntityManager()->flush($post);
+		$this->entityManager->flush($post);
 	}
 	
 	/**
@@ -218,26 +199,23 @@ class PostService implements EventManagerAwareInterface
 		}
 		$post->author = $auth->getIdentity()->getId();
 		
-		// Get the setup options
-		$options = $this->getEntityManager()->getRepository('Blog\Entity\Option');
-		
 		// Set the language code
-		if (empty($post->language_code)) {
-			$default = $options->find('default_language_code');
-			if (!empty($default)) {
-				$post->language_code = $default->getValue();
-			} else {
-				$default = \Locale::getDefault();
-				$post->language_code = \Locale::getPrimaryLanguage($default);
-			}		
+		$language = $post->getLanguageCode();
+		if (empty($language)) {
+			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
+			$language = $languageService->getDefault()->getId();
+			$post->setLanguageCode($language);
 		}
 		
 		// Set the default comment status
 		if (empty($post->comment_status)) {
-			$default = $options->find('default_comment_status');
+			$optionsService = $this->serviceManager->get('Blog\Service\OptionService');
+			$default = $options->get('default_comment_status');
 			if (!empty($default) && is_string($default)) {
 				$post->comment_status = $default;
-			}		
+			} else {
+				$post->comment_status = 'open';
+			}
 		}
 		
 		// Set dates
@@ -246,7 +224,7 @@ class PostService implements EventManagerAwareInterface
 		$post->modified = new \DateTime(date('Y-m-d H:i:s', $now));
 		
 		
-		$this->getEntityManager()->persist($post);
-        $this->getEntityManager()->flush($post);
+		$this->entityManager->persist($post);
+        $this->entityManager->flush($post);
 	}
 }
