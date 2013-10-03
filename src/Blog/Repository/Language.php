@@ -22,6 +22,7 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
+
 namespace Blog\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -29,6 +30,17 @@ use Doctrine\ORM\EntityRepository;
 class Language extends EntityRepository
 {
 
+	/**
+	 * Finds a language by its ISO-639-1 2-letter code
+	 *
+	 * @param string $iso The iso code for the language
+	 * @return Blog\Entity\Language The language object
+	 */
+	public function find( $iso )
+	{
+		return $this->findOneBy(array('iso' => $iso));
+	}
+	
 	/**
 	 * Find all active repositories
 	 * 

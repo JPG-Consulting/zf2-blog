@@ -39,7 +39,7 @@ class LanguageService extends AbstractEntityService
 	 */
 	public function has( $iso )
 	{
-		$language = $this->repository->findOneBy(array('iso' => $iso));
+		$language = $this->repository->find($iso);
 		if (!empty($language)) return true;
 		return false;
 	}
@@ -51,7 +51,7 @@ class LanguageService extends AbstractEntityService
 	 */
 	public function get( $iso )
 	{
-		return $this->repository->findOneBy(array('iso' => $iso));
+		return $this->repository->find($iso);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ class LanguageService extends AbstractEntityService
 	 */
 	public function isActive( $iso )
 	{
-		$language = $this->repository->findOneBy(array('iso' => $iso));
+		$language = $this->repository->find($iso);
 		// If it doesn't exist it can not be active ;)
 		if (empty($language)) return false;
 		
@@ -88,7 +88,7 @@ class LanguageService extends AbstractEntityService
 			$options = $this->serviceManager->get('Blog\Service\OptionService');
 			$locale = $options->get('default_language_code');
 			if (!empty($locale)) {
-				$locale = $this->repository->findOneBy(array('iso' => $locale));
+				$locale = $this->repository->find($locale);
 				if (!empty($locale)) {
 					$this->default = $locale;
 				}
@@ -116,7 +116,7 @@ class LanguageService extends AbstractEntityService
 				$locale = explode('-', $locale, 2);
 				
 				// if it is active... SET IT!
-				$locale = $this->repository->findOneBy(array('iso' => $locale));
+				$locale = $this->repository->find($locale);
 				if (!empty($locale)) {
 					if ($locale->isActive()) {
 						$this->current = $locale;
@@ -130,7 +130,7 @@ class LanguageService extends AbstractEntityService
 					$locale = \Locale::getPrimaryLanguage($locale);
 					
 					// if it is active... SET IT!
-					$locale = $this->repository->findOneBy(array('iso' => $locale));
+					$locale = $this->repository->find($locale);
 					if (!empty($locale)) {
 						if ($locale->isActive()) {
 							$this->current = $locale;
