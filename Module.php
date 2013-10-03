@@ -24,6 +24,10 @@
  */
 namespace Blog;
 
+use Blog\View\Helper\GetPostUrl;
+
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
+
 use Zend\ModuleManager\Feature\FormElementProviderInterface;
 
 use Blog\Service\PostService;
@@ -38,7 +42,8 @@ class Module implements
 	AutoloaderProviderInterface, 
 	ConfigProviderInterface, 
 	FormElementProviderInterface,
-	ServiceProviderInterface
+	ServiceProviderInterface, 
+	ViewHelperProviderInterface
 {
 
 	/**
@@ -100,6 +105,21 @@ class Module implements
 					return new PostService($sm);
 				},
 			),
+		);
+	}
+	
+	public function getViewHelperConfig()
+	{
+		return array(
+			'factories' => array(
+				'getPostUrl' => function($helperPluginManager) {
+					$serviceLocator = $helperPluginManager->getServiceLocator();
+					$router = $serviceLocator->get('Router');
+					$viewHelper = new GetPostUrl();
+					$viewHelper->setRouter($router);
+					return $viewHelper;
+				},
+			)
 		);
 	}
 }

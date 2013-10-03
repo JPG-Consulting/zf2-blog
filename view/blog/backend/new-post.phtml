@@ -7,11 +7,12 @@ $post     = $form->get('post');
 $form->prepare();
 
 echo $this->form()->openTag($form);
-echo $this->formRow($post->get('title'));
-echo $this->formRow($post->get('slug'));
+
+echo "<div>" . $this->formRow($post->get('title')) . "</div>";
+echo "<div id=\"post_slug\">" . $this->formRow($post->get('slug')) . "</div>";
 //echo $this->formRow($post->get('categories'));
-echo $this->formRow($post->get('excerpt'));
-echo $this->formRow($post->get('content'));
-echo $this->formElement($form->get('csrf'));
-echo $this->formRow($form->get('submit'));
+echo "<div>" . $this->formRow($post->get('content')) . "</div>";
+echo "<div id=\"post_excerpt\">" . $this->formRow($post->get('excerpt')) . "</div>";
+echo "<div>" . $this->formElement($form->get('csrf'));
+echo "<div>" . $this->formRow($form->get('submit')) . "</div>";
 echo $this->form()->closeTag();
