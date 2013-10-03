@@ -97,9 +97,7 @@ class Module implements
 		return array(
 			'factories' => array(
 				'Blog\Service\PostService' => function($sm) {
-					$entityManager = $sm->get('Doctrine\ORM\EntityManager');
-					//$entityManager = $sm->get('doctrine.entitymanager.orm_default');
-					return new PostService($entityManager);
+					return new PostService($sm);
 				},
 			),
 		);

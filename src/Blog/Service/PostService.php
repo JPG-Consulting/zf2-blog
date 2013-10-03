@@ -1,6 +1,8 @@
 <?php
 namespace Blog\Service;
 
+use Zend\ServiceManager\ServiceManager;
+
 use Blog\Event\BlogEvent;
 
 use Zend\EventManager\EventManager;
@@ -9,12 +11,16 @@ use Zend\EventManager\EventManagerInterface;
 
 use Zend\EventManager\EventManagerAwareInterface;
 
-use Doctrine\Common\Persistence\ObjectManager;
-
 use Blog\Entity\Post as PostEntity;
 
 class PostService implements EventManagerAwareInterface
 {
+	/**
+	 * 
+	 * Enter description here ...
+	 * @var Zend\ServiceManager\ServiceManager
+	 */
+	protected $serviceManager;
 	/**
 	 * The entity manager
 	 * @var Doctrine\ORM\EntityManager
@@ -30,9 +36,17 @@ class PostService implements EventManagerAwareInterface
      */
 	protected $events;
 	
-	public function __construct(ObjectManager $entityManager)
+	public function __construct(ServiceManager $serviceManager)
 	{
-		$this->entityManager = $entityManager;
+		$this->serviceManager = $serviceManager;
+	}
+	
+	public function getEntityManager()
+	{
+		if (null === $this->entityManager) {
+			$this->entityManager = $this->serviceManager->get('Doctrine\ORM\EntityManager');
+		}
+		return $this->entityManager;
 	}
 	
 	/**
@@ -43,7 +57,7 @@ class PostService implements EventManagerAwareInterface
 	public function getRepository()
 	{
 		if (null === $this->repository) {
-			$this->repository = $this->entityManager->getRepository('Blog\Entity\Post');
+			$this->repository = $this->getEntityManager()->getRepository('Blog\Entity\Post');
 		}
 		return $this->repository;
 	}
@@ -80,14 +94,29 @@ class PostService implements EventManagerAwareInterface
         return $this->events;
 	}
 	
+	protected function getLanguage()
+	{
+		$translator = $this->serviceManager->get('translator');
+		$locale = $translator->getLocale();
+		// Normalize...
+		// ZF-2 usualy return language_region
+		// but \Locale return language-region
+		$locale = preg_replace('/_/', '-', $locale);
+		$locale = explode('-', $locale, 2);
+		return $locale[0];
+	}
+	
 	/**
 	 * Takes a post ID and returns the database record for that post.
 	 * 
 	 * @param mixed $id
 	 */
-	public function getPost( $id )
+	public function getPost( $id, $language_code = null )
 	{
-		$post = $this->getRepository()->find($id);
+		if (empty($language_code)) $language_code = $this->getLanguage();
+		
+		$post = $this->getRepository()->findOneBy(array('language_code' => $language_code, 'slug' => $id));
+		
 		// Trigger an event
 		// Allows developers to modify the post object immediately after being queried and setup.
 		$event = new BlogEvent();
@@ -171,7 +200,7 @@ class PostService implements EventManagerAwareInterface
 		// Modified date
 		$post->modified = new DateTime(date('Y-m-d H:i:s', time()));
 			
-		$this->entityManager->flush($post);
+		$this->getEntityManager()->flush($post);
 	}
 	
 	/**
@@ -181,8 +210,16 @@ class PostService implements EventManagerAwareInterface
 	 */
 	public function createPost(PostEntity $post)
 	{
+		// Set the author
+		// I do this first as it treats unauthorized access 
+		$auth = $this->serviceManager->get('zfcuser_auth_service');
+		if (!$auth->hasIdentity()) {
+			throw new \Blog\Exception\UnautorizedAccessException("You can not create new posts");
+		}
+		$post->author = $auth->getIdentity()->getId();
+		
 		// Get the setup options
-		$options = $this->entityManager->getRepository('Blog\Entity\Option');
+		$options = $this->getEntityManager()->getRepository('Blog\Entity\Option');
 		
 		// Set the language code
 		if (empty($post->language_code)) {
@@ -209,7 +246,7 @@ class PostService implements EventManagerAwareInterface
 		$post->modified = new \DateTime(date('Y-m-d H:i:s', $now));
 		
 		
-		$this->entityManager->persist($post);
-        $this->entityManager->flush($post);
+		$this->getEntityManager()->persist($post);
+        $this->getEntityManager()->flush($post);
 	}
 }

@@ -1,0 +1,6 @@
+<h1><?php echo $this->translate('Latest Posts'); ?></h1>
+<?php foreach ($this->Posts as $post) : ?>
+<?php // TODO: Create ViewHelper for post url ?>
+	<h2><a href="<?php echo $this->url('blog/post', array('slug' => $post->getSlug())) ?>"><?php echo $post->getTitle() ?></a></h2>
+	<div><?php echo $post->getContent() ?></div>
+<?php endforeach; ?>

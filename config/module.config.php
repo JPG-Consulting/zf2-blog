@@ -31,20 +31,32 @@ return array(
                     'route'    => '/blog',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Blog\Controller',
-                        'controller'    => 'Index',
+                        'controller'    => 'Frontend',
                         'action'        => 'index',
                     ),
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                	'post' => array(
+                		'type'    => 'Regex',
+						'options' => array(
+							'regex' => '/(?<slug>[a-zA-Z0-9-]+)\.html',
+							'spec' => '/%slug%.html',
+                			'defaults' => array(
+	                        	'__NAMESPACE__' => 'Blog\Controller',
+	                        	'controller'    => 'Frontend',
+	                        	'action'        => 'singlePost',
+	                    	),
+						),
+                	),
                 	'admin' => array(
 		            	'type'    => 'Literal',
 		                'options' => array(
 		                    'route'    => '/admin',
 		                    'defaults' => array(
 		                        '__NAMESPACE__' => 'Blog\Controller',
-		                        'controller'    => 'Post',
-		                        'action'        => 'new',
+		                        'controller'    => 'Backend',
+		                        'action'        => 'newPost',
 		                    ),
 		                ),
 		                'may_terminate' => true,
@@ -67,8 +79,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Blog\Controller\Index' => 'Blog\Controller\IndexController',
-    		'Blog\Controller\Post' => 'Blog\Controller\PostController'
+            'Blog\Controller\Frontend' => 'Blog\Controller\FrontendController',
+    		'Blog\Controller\Backend' => 'Blog\Controller\BackendController'
         ),
     ),
     'view_manager' => array(

@@ -2,6 +2,7 @@
 namespace Blog\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ZfcUser\Entity\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="Blog\Repository\Post")
@@ -81,7 +82,10 @@ class Post
      */
     public $modified;
     
-    
+    /**
+     * @ORM\Column(type="integer")
+     */ 
+    public $author;
     
     
     /**************************************
@@ -184,6 +188,5 @@ class Post
     {
     	return $this->modified;
     }
-    
     
 }
