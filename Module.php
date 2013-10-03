@@ -101,9 +101,7 @@ class Module implements
 	{
 		return array(
 			'factories' => array(
-				'Blog\Service\PostService' => function($sm) {
-					return new PostService($sm);
-				},
+				'Blog\Service\PostService' => 'Blog\Service\PostServiceFactory',
 			),
 		);
 	}
