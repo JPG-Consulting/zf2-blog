@@ -86,7 +86,7 @@ class LanguageService extends AbstractEntityService
 	{
 		if (empty($this->default)) {
 			$options = $this->serviceManager->get('Blog\Service\OptionService');
-			$locale = $options->get('default_locale_code');
+			$locale = $options->get('default_language_code');
 			if (!empty($locale)) {
 				$locale = $this->repository->findOneBy(array('iso' => $locale));
 				if (!empty($locale)) {

@@ -37,7 +37,7 @@ class OptionService extends AbstractEntityService
 	 */
 	public function get($option)
 	{
-		$option = $this->getRepository()->find($option);
+		$option = $this->repository->find($option);
 		if (empty($option)) return null;
 		return $option->getValue();
 	}
@@ -50,17 +50,17 @@ class OptionService extends AbstractEntityService
 	 */
 	public function set($option, $value)
 	{
-		$the_option = $this->getRepository()->find($option);
+		$the_option = $this->repository->find($option);
 		if (!empty($the_option)) {
 			$the_option->setValue($value);
 		} else {
 			$the_option = new Option();
 			$the_option->setKey($option);
 			$the_option->setValue($value);
-			$this->getEntityManager()->persist($the_option);
+			$this->entityManager->persist($the_option);
 		}
 		
-		$this->getEntityManager()->flush($the_option);
+		$this->entityManager->flush($the_option);
 	}
 	
 	/**

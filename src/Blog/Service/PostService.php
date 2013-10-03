@@ -90,7 +90,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 			$language_code = $languageService->getCurrent()->getId();
 		} 
 		
-		$post = $this->repository->findOneBy(array('language_code' => $language_code, 'slug' => $id));
+		$post = $this->repository->findOneBy(array('language' => $language_code, 'slug' => $id));
 		
 		// Trigger an event
 		// Allows developers to modify the post object immediately after being queried and setup.
@@ -128,7 +128,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		// Language
 		if (!isset($args['language'])) {
 			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
-			$criteria['language_code'] = $languageService->getCurrent()->getId();
+			$criteria['language'] = $languageService->getCurrent()->getId();
 		}
 		
 		// Order By...
@@ -195,16 +195,17 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		// I do this first as it treats unauthorized access 
 		$auth = $this->serviceManager->get('zfcuser_auth_service');
 		if (!$auth->hasIdentity()) {
-			throw new \Blog\Exception\UnautorizedAccessException("You can not create new posts");
+			throw new \Blog\Exception\UnauthorizedAccessException("You can not create new posts");
 		}
 		$post->author = $auth->getIdentity()->getId();
 		
-		// Set the language code
-		$language = $post->getLanguageCode();
+		// Set the language
+		$language = $post->getLanguage();
 		if (empty($language)) {
 			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
-			$language = $languageService->getDefault()->getId();
-			$post->setLanguageCode($language);
+			$language = $languageService->getDefault();
+			$post->setLanguage($language);
+			
 		}
 		
 		// Set the default comment status

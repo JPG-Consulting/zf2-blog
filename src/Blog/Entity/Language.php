@@ -27,7 +27,7 @@ namespace Blog\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Blog\Repository\Language")
  * @ORM\Table(name="Languages")
  */
 class Language
