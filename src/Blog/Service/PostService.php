@@ -132,7 +132,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		}
 		
 		// Order By...
-		$orderBy = isset($args['orderby']) ? $args['orderby'] : array('created' => 'DESC');
+		$orderBy = isset($args['orderby']) ? $args['orderby'] : array('date_created' => 'DESC');
 		if (!is_array($orderBy)) {
 			$orderBy = array($orderBy => 'DESC');
 		}
@@ -178,8 +178,12 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 	 */
 	public function savePost(PostEntity $post )
 	{
-		// Modified date
-		$post->modified = new DateTime(date('Y-m-d H:i:s', time()));
+		// Set dates
+		$now = time();
+		$post->date_modified = new DateTime(date('Y-m-d H:i:s', $now));
+		if ((strcasecmp($post->getStatus(), 'publish') === 0) && (empty($post->date_published))) {
+			$post->date_published = new \DateTime(date('Y-m-d H:i:s', $now));
+		}
 			
 		$this->entityManager->flush($post);
 	}
@@ -229,8 +233,11 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		
 		// Set dates
 		$now = time();
-		$post->created = new \DateTime(date('Y-m-d H:i:s', $now));
-		$post->modified = new \DateTime(date('Y-m-d H:i:s', $now));
+		$post->date_created = new \DateTime(date('Y-m-d H:i:s', $now));
+		$post->date_modified = new \DateTime(date('Y-m-d H:i:s', $now));
+		if (strcasecmp($post->getStatus(), 'publish') === 0) {
+			$post->date_published = new \DateTime(date('Y-m-d H:i:s', $now));
+		}
 		
 		
 		$this->entityManager->persist($post);

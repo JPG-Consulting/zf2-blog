@@ -1,2 +1,9 @@
-<h1><?php echo $this->post->getTitle()?></h1>
-<div><?php echo $this->post->getContent(); ?></div>
+<article itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 itemprop="name"><?php echo $this->post->getTitle()?></h1>
+	<div itemprop="articleBody"><?php echo $this->post->getContent(); ?></div>
+	<meta itemprop="inLanguage" content = "<?php echo $this->post->getLanguage() ?>" /> 
+	<meta itemprop="dateCreated" content="<?php echo $this->post->getDateCreated()->format('Y-m-d') ?>">
+	<meta itemprop="dateModified" content="<?php echo $this->post->getDateModified()->format('Y-m-d') ?>">
+	<meta itemprop="datePublished" content="<?php echo $this->post->getDatePublished()->format('Y-m-d') ?>">
+	<link itemprop="url" href="<?php echo $this->serverUrl() . $this->getPostUrl($this->post->getSlug()) ?>" />
+</article>

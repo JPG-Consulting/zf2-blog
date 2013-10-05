@@ -97,14 +97,21 @@ class Post
      *
      * @ORM\Column(type="datetime")
      */
-    public $created;
+    public $date_created;
     
     /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
-    public $modified;
+    public $date_modified;
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    public $date_published;
     
     /**
      * @ORM\Column(type="integer")
@@ -204,14 +211,19 @@ class Post
     	return $this;
     }
     
-    public function getCreated()
+    public function getDateCreated()
     {
-    	return $this->created;
+    	return $this->date_created;
     }
     
-    public function getModified()
+    public function getDateModified()
     {
-    	return $this->modified;
+    	return $this->date_modified;
+    }
+    
+	public function getDatePublished()
+    {
+    	return $this->date_published;
     }
     
 }

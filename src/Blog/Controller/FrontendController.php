@@ -61,6 +61,13 @@ class FrontendController extends AbstractActionController
 			return;
     	}
     	
+    	// Set the title to the post title
+    	$renderer = $this->getServiceLocator()->get('Zend\View\Renderer\PhpRenderer');
+    	$renderer->headTitle($post->getTitle());
+    	
+    	// TODO: meta-description
+    	
+    	
 		return new ViewModel(array(
 			'post' => $post
 		));
