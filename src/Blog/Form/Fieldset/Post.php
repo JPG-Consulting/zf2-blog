@@ -30,7 +30,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Zend\InputFilter\InputFilterProviderInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class Post extends Fieldset implements InputFilterProviderInterface
+class Post extends Fieldset //implements InputFilterProviderInterface
 {
 
     public function __construct(ObjectManager $objectManager)
@@ -38,9 +38,28 @@ class Post extends Fieldset implements InputFilterProviderInterface
         parent::__construct('post');
 
         $this->setHydrator(new DoctrineHydrator($objectManager , 'Blog\Entity\Post'));
-
+        
+        $this->add(array(
+            'name' => 'language',
+            'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+            'options' => array(
+                'label' => "Language",
+                'object_manager' => $objectManager,
+                'target_class' => 'Blog\Entity\Language',
+                'property' => 'english_name',
+        		'find_method'    => array(
+               'name'   => 'findBy',
+               'params' => array(
+                               'criteria' => array('active' => 1),
+                                'orderBy'  => array('english_name' => 'ASC'),
+                           ),
+            	),
+            ),
+        ));
+        
         $this->add(array(
             'name'       => 'title',
+        	'type'       => 'Text',
             'options'    => array(
                 'label' => 'Title',
             ),
@@ -49,23 +68,11 @@ class Post extends Fieldset implements InputFilterProviderInterface
             ),
         ));
 
-       // $this->add(array(
-       //     'type'    => 'DoctrineModule\Form\Element\ObjectMultiCheckbox',
-       //     'name'    => 'categories',
-       //     'options' => array(
-       //         'object_manager' => $objectManager,
-       //         'target_class'   => 'SxBlog\Entity\Category',
-       //         'property'       => 'name',
-       //     ),
-       // ));
-
         $this->add(array(
             'name'       => 'slug',
+        	'type'		 => 'text',
             'options'    => array(
                 'label' => 'Slug',
-            ),
-            'attributes' => array(
-                'required' => 'required',
             ),
         ));
 
@@ -99,12 +106,25 @@ class Post extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
             ),
             'slug'  => array(
-                'required' => true,
+                //'required' => true,
+                'filters' => array(
+	                array('name' => 'StripTags'),
+	                array('name' => 'StringTrim'),
+	            ),
+	            'validators' => array(
+	                array(
+	                    'name' => 'StringLength',
+	                    'options' => array(
+	                        'encoding' => 'UTF-8',
+	                        'min' => 0,
+	                        'max' => 255,
+	                    ),
+	                ),
+	            ),
             ),
             'content'  => array(
                 'required' => true,
             ),
         );
     }
-
 }

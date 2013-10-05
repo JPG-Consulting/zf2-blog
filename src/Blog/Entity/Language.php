@@ -122,4 +122,9 @@ class Language
 		return $this->active;
 	}
 	
+	
+	public function getEnglish_name()
+	{
+		return $this->english_name;
+	}
 }

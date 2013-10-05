@@ -24,6 +24,8 @@
  */
 namespace Blog\Form;
 
+use Doctrine\ORM\EntityManager;
+
 use Zend\Form\Form;
 use Zend\Form\Element\Csrf;
 

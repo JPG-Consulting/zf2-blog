@@ -55,10 +55,10 @@ class BackendController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-
                 $this->getPostService()->createPost($postEntity);
 
-                //return $this->redirect()->toRoute('blog/admin/post/edit', array('slug' => $postEntity->getSlug()));
+                // Route to the post
+                return $this->redirect()->toRoute('blog/post', array('slug' => $postEntity->getSlug()));
             }
 
             //$message = $this->getMessage('post_creation_fail');

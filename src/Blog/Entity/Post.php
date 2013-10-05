@@ -22,29 +22,31 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
+
 namespace Blog\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ZfcUser\Entity\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="Blog\Repository\Post")
+ * @ORM\Entity
  * @ORM\Table(name="posts")
  */
 class Post
 {
     /**
+     * @var string
+     * 
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Blog\Entity\Language")
-     * @ORM\JoinColumn(name="language", referencedColumnName="iso")
+     * @ORM\Column(type="string", length=2)
      */
-    public $language;
+	public $lang;
     
     /**
      * @var string
      * 
      * @ORM\Id
-     * @ORM\Column(type="string", length=7)
+     * @ORM\Column(type="string", length=255)
      */
     public $slug;
     
@@ -114,22 +116,18 @@ class Post
      *  G E T T E R S   &   S E T T E R S *
      **************************************/
     
-    //public function getLanguageIso()
-    //{
-    //	return $this->language->getId();
-    //}
     
     public function getLanguage()
     {
-    	return $this->language;
+    	return $this->lang;
     }
     
     public function setLanguage( $language )
     {
-    	$this->language = $language;
+    	$this->lang = $language;
     	return $this;
     }
-    
+        
     public function getSlug()
     {
     	return $this->slug;

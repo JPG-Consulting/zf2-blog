@@ -77,16 +77,16 @@ class Module implements
 		return array(
 		    'factories' => array(
 		        'Blog\Form\CreatePost' => function ($sm) {
+					$entityManager = $sm->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+					// Post fieldset
+					$postFieldset = new Form\Fieldset\Post($entityManager);
+					$postFieldset->setUseAsBaseFieldset(true);
+					
+					// Form
 		            $createPostForm = new Form\CreatePost();
-		            $postFieldset   = $sm->get('Blog\Form\Fieldset\Post');
-		
-		            $postFieldset->setUseAsBaseFieldset(true);
 		            $createPostForm->add($postFieldset);
 		
 		            return $createPostForm;
-		        },
-		        'Blog\Form\Fieldset\Post' => function ($sm) {
-		            return new Form\Fieldset\Post($sm->getServiceLocator()->get('Doctrine\ORM\EntityManager'));
 		        },
 		    ),
 		);

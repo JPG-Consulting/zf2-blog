@@ -90,7 +90,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 			$language_code = $languageService->getCurrent()->getId();
 		} 
 		
-		$post = $this->repository->findOneBy(array('language' => $language_code, 'slug' => $id));
+		$post = $this->repository->findOneBy(array('lang' => $language_code, 'slug' => $id));
 		
 		// Trigger an event
 		// Allows developers to modify the post object immediately after being queried and setup.
@@ -128,7 +128,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		// Language
 		if (!isset($args['language'])) {
 			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
-			$criteria['language'] = $languageService->getCurrent()->getId();
+			$criteria['lang'] = $languageService->getCurrent()->getId();
 		}
 		
 		// Order By...
@@ -203,7 +203,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		$language = $post->getLanguage();
 		if (empty($language)) {
 			$languageService = $this->serviceManager->get('Blog\Service\LanguageService');
-			$language = $languageService->getDefault();
+			$language = $languageService->getDefault()->getId();
 			$post->setLanguage($language);
 			
 		}
@@ -219,6 +219,14 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 			}
 		}
 		
+		// Make sure the slug is correct
+		$slug = $post->getSlug();
+		// if the slug is not set, use the title as slug
+		if (empty($slug)) $slug = $post->title;
+		// make sure the slug is valid
+		$slug = $this->slugify($slug);
+		$post->setSlug($slug);
+		
 		// Set dates
 		$now = time();
 		$post->created = new \DateTime(date('Y-m-d H:i:s', $now));
@@ -227,5 +235,39 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		
 		$this->entityManager->persist($post);
         $this->entityManager->flush($post);
+	}
+	
+	protected function slugify($text)
+	{
+		// check if the text is a valid slug
+		// if it is there is no need to slugify.
+		if (preg_match('/^[a-z0-9]+(\-[a-z0-9]+)*[a-z0-9]+$/', $text)) {
+			return $text;
+		}
+		
+		// transliterate
+		if (function_exists('transliterator_transliterate')) {
+			// PHP >= 5.4.0, PECL intl >= 2.0.0
+			$text = transliterator_transliterate('Any-Latin; Latin-ASCII; Lower()', $text);
+		} elseif (function_exists('iconv')) {
+			// TODO: Problems with cyrilic characters...
+	        $text = iconv('UTF-8', 'US-ASCII//TRANSLIT', $text);
+	    }
+	    
+	    // Spaces are replaed with dash
+	    $text = preg_replace('/\s+/', '-', $text);
+	    
+	   
+	    // Avoid double dashes
+	    $text = preg_replace('/\-+/', '-', $text);
+	    // Remove any non-alphanumeric or non-dash character
+	    $text = preg_replace('/[^a-z0-9\-]/i', '', $text);
+    	
+    	// TODO: if text is empty raise an exception
+    	
+	    // Must be lowercaser
+	    $text = strtolower($text);
+	    
+    	return $text;
 	}
 }
