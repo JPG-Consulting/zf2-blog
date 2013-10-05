@@ -228,6 +228,13 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		if (empty($slug)) $slug = $post->title;
 		// make sure the slug is valid
 		$slug = $this->slugify($slug);
+		
+		// 
+		$slug_id = $this->repository->findNextSlugId($post->getLanguage(), $slug);
+		if ($slug_id > 0) {
+			$slug .= '-' . $slug_id;
+		}
+		
 		$post->setSlug($slug);
 		
 		// Set dates

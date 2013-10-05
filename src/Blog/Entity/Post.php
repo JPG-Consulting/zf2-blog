@@ -29,7 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ZfcUser\Entity\UserInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Blog\Repository\Post")
  * @ORM\Table(name="posts")
  */
 class Post
@@ -70,13 +70,6 @@ class Post
      * @ORM\Column(type="text", nullable=true)
      */
     public $excerpt;
-    
-    /**
-     * @var string
-     * 
-     * @ORM\Column(type="string", length=20)
-     */
-    public $type = 'BlogPosting';
     
     /**
      * @var string
@@ -176,17 +169,6 @@ class Post
     public function setExcerpt( $excerpt )
     {
     	$this->excerpt = $excerpt;
-    }
-    
-    public function getType()
-    {
-    	return $this->type;
-    }
-    
-    public function setType( $type )
-    {
-    	$this->type = $type;
-    	return $this;
     }
     
     public function getStatus()

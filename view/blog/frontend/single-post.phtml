@@ -1,5 +1,5 @@
-<article itemscope itemtype="http://schema.org/<?php echo $this->post->getType() ?>">
-	<h1 itemprop="name"><?php echo $this->post->getTitle()?></h1>
+<article itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 itemprop="name headline"><?php echo $this->post->getTitle()?></h1>
 	<div itemprop="articleBody"><?php echo $this->post->getContent(); ?></div>
 	<meta itemprop="inLanguage" content = "<?php echo $this->post->getLanguage() ?>" /> 
 	<meta itemprop="dateCreated" content="<?php echo $this->post->getDateCreated()->format('Y-m-d') ?>">

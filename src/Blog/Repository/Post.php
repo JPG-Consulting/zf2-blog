@@ -22,6 +22,7 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
+
 namespace Blog\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -29,14 +30,29 @@ use Doctrine\ORM\EntityRepository;
 class Post extends EntityRepository
 {
 
-	/**
-	 * Find a post by slug.
-	 * 
-	 * @param string $slug
-	 * @return \Blog\Entity\Post 
-	 */
-	public function findBySlug( $slug )
+	public function findNextSlugId($language, $slug )
 	{
-		return $this->findBy(array('name' => $slug));
+		$post = $this->findOneBy(array('lang' => $language, 'slug' => $slug));
+		if (empty($post)) return 0;
+		
+		
+		// A post already exists with this slug for this language
+		// How many more are there?
+		$query = $this->_em->createQuery('SELECT p.slug FROM Blog\Entity\Post p WHERE p.lang = :lang AND p.slug LIKE :slug');
+		$query->setParameters(array('lang' => $language, 'slug' => $slug . '-%'));
+		$results = $query->execute();
+
+		if(empty($results)) return 1;
+
+		$ids = array();
+		$pattern = '/^' . preg_replace('/\-/', '\-', $slug) . '-([0-9]+)$/';
+		foreach($results as $result) {
+			if (preg_match($pattern, $result['slug'], $m)) 
+				$ids[] = (int) $m[1];
+		}
+		
+		$id = max($ids) + 1;
+		return $id;
 	}
+
 }
