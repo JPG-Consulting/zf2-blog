@@ -48,13 +48,28 @@ class Post extends Fieldset //implements InputFilterProviderInterface
                 'target_class' => 'Blog\Entity\Language',
                 'property' => 'english_name',
         		'find_method'    => array(
-               'name'   => 'findBy',
-               'params' => array(
-                               'criteria' => array('active' => 1),
-                                'orderBy'  => array('english_name' => 'ASC'),
-                           ),
+                    'name'   => 'findBy',
+                    'params' => array(
+                        'criteria' => array('active' => 1),
+                        'orderBy'  => array('english_name' => 'ASC'),
+                    ),
             	),
             ),
+        ));
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'status',
+            'options' => array(
+                'label' => 'Status',
+                'value_options' => array(
+                    'draft'   => 'Draft',
+                    'publish' => 'Publish',
+                ),
+            ),
+            'attributes' => array(
+                'value' => 'draft'
+            )
         ));
         
         $this->add(array(

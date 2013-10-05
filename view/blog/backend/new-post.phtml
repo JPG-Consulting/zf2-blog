@@ -9,6 +9,7 @@ $form->prepare();
 echo $this->form()->openTag($form);
 
 echo "<div>" . $this->formRow($post->get('language')) . "</div>";
+echo "<div>" . $this->formRow($post->get('status')) . "</div>";
 echo "<div>" . $this->formRow($post->get('title')) . "</div>";
 echo "<div id=\"post_slug\">" . $this->formRow($post->get('slug')) . "</div>";
 //echo $this->formRow($post->get('categories'));
