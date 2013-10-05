@@ -23,6 +23,16 @@
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
 return array(
+	'blog' => array(
+		/**
+		 * Allows to change the admin route.
+		 * 
+		 * This can be usefull if we want to use it with
+		 * ZfcAdmin or whatever...
+		 * Default: 'blog/admin'
+		 */
+		'admin_route' => 'blog/admin',
+	),
 	'router' => array(
         'routes' => array(
             'blog' => array(
@@ -74,7 +84,44 @@ return array(
 		                    ),
 		                ),
 		                'may_terminate' => true,
-		                'child_routes' => array(),
+		                'child_routes' => array(
+		                	'posts' => array(
+		                		'type'    => 'Literal',
+				                'options' => array(
+				                    'route'    => '/posts',
+				                    'defaults' => array(
+				                        '__NAMESPACE__' => 'Blog\Controller',
+				                        'controller'    => 'Backend',
+				                        'action'        => 'newPost',
+				                    ),
+				                ),
+				                'may_terminate' => true,
+				                'child_routes' => array(
+				                	'new' => array(
+				                		'type'    => 'Literal',
+						                'options' => array(
+						                    'route'    => '/new',
+						                    'defaults' => array(
+						                        '__NAMESPACE__' => 'Blog\Controller',
+						                        'controller'    => 'Backend',
+						                        'action'        => 'newPost',
+						                    ),
+						                ),
+				                	),
+				                	'edit' => array(
+				                		'type'    => 'Literal',
+						                'options' => array(
+						                    'route'    => '/edit',
+						                    'defaults' => array(
+						                        '__NAMESPACE__' => 'Blog\Controller',
+						                        'controller'    => 'Backend',
+						                        'action'        => 'editPost',
+						                    ),
+						                ),
+				                	)
+				                )
+		                	)
+		                ),
 		            )
                 ),
             ),

@@ -32,13 +32,14 @@ class OptionService extends AbstractEntityService
 	/**
 	 * Get an option from the database configuration
 	 * 
-	 * @param string $option The option name
+	 * @param string $option  The option name
+	 * @param string $default The default value if the option is not found
 	 * @return mixed
 	 */
-	public function get($option)
+	public function get($option, $default = null)
 	{
 		$option = $this->repository->find($option);
-		if (empty($option)) return null;
+		if (empty($option)) return $default;
 		return $option->getValue();
 	}
 	

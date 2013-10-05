@@ -35,6 +35,10 @@ class BackendController extends AbstractActionController
 
 	protected $postService;
 	
+	/**
+	 * 
+	 * @return Blog\Service\PostService
+	 */
 	protected function getPostService()
 	{
 		if(null === $this->postService) {
@@ -55,10 +59,14 @@ class BackendController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->getPostService()->createPost($postEntity);
+            	try {
+            		$this->getPostService()->createPost($postEntity);
 
-                // Route to the post
-                return $this->redirect()->toRoute('blog/post', array('slug' => $postEntity->getSlug()));
+	                // Route to the post edit page
+	                $config = $this->serviceLocator->get('Blog\Config');
+	                return $this->redirect()->toRoute($config->get('admin_route') . '/posts/edit', array(), array('query' => array('s' => $postEntity->getSlug(), 'hl' => $postEntity->getLanguage())));	
+            	} catch (Exception $e) {
+            	}
             }
 
             //$message = $this->getMessage('post_creation_fail');
@@ -68,7 +76,56 @@ class BackendController extends AbstractActionController
             'form'    => $form,
             //'message' => $message,
         ));
-
+    }
+    
+    public function editPostAction()
+    {
+    	$request  = $this->getRequest();
+    	$slug     = $this->params()->fromQuery('s', null);
+    	$language = $this->params()->fromQuery('hl', null);
+    	$status   = null;
+    	
+    	if (empty($slug)) {
+	    	// Slug is mandatory!
+	    	// TODO: Maybe redirect to the previous page or post list?
+	    	$this->getResponse()->setStatusCode(404);
+			return;
+    	}
+    	
+    	if (empty($language)) {
+    		$language = $this->serviceLocator->get('Blog\Service\OptionService')->get('default_language_code');
+    	}
+    	
+    	// Load the post
+    	$postEntity = $this->getPostService()->getRepository()->findOneBy(array('lang' => $language, 'slug' => $slug));
+    	if (empty($postEntity)) {
+    		// Post does not exist!
+	    	// TODO: Maybe redirect to the previous page or post list? Or maybe try finding it in another language
+	    	$this->getResponse()->setStatusCode(404);
+			return;
+    	}
+    	
+    	$form = $this->getServiceLocator()->get('FormElementManager')->get('Blog\Form\CreatePost');
+    	$form->bind($postEntity);
+        
+    	if ($request->isPost()) {
+    		$form->setData($request->getPost());
+            if ($form->isValid()) {
+            	try {
+            		$this->getPostService()->savePost($postEntity);
+            		$status = true;	
+            	} catch (Exception $e) {
+            		$status = false;
+            	}
+            } else {
+            	$status = false;
+            }
+    	}
+    	
+    	return new ViewModel(array(
+            'form'   => $form,
+           	'status' => $status,
+        ));
     }
 
 }

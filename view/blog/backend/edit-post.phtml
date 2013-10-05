@@ -1,6 +1,10 @@
-<h1><?php echo $this->translate('New Post') ?></h1>
+<h1><?php echo $this->translate('Edit Post') ?></h1>
+<?php if ($status === true) : ?>
+<div class="alert alert-success"><?php echo $this->translate('Post saved successfully.');?></div>
+<?php elseif ($status === false) : ?>
+<div class="alert alert-error"><?php echo $this->translate('Unable to update the post. Please try again.'); ?></div>
+<?php endif; ?>
 <?php
-
 
 $form     = $this->form;
 $post     = $form->get('post');

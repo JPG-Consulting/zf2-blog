@@ -22,50 +22,25 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
-namespace Blog\Service;
+namespace Blog\Service\Factory;
 
+use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Config\Config;
 
-abstract class AbstractEntityService
+class ConfigFactory implements FactoryInterface
 {
-	
-	/**
-	 * 
-	 * Enter description here ...
-	 * @var Zend\ServiceManager\ServiceManager
-	 */
-	protected $serviceManager;
-	
-	/**
-	 * The entity manager
-	 * @var Doctrine\ORM\EntityManager
-	 */
-	protected $entityManager;
-
-	/**
-	 * The repository
-	 * @return Doctrine\Orm\EntityRepository
-	 */
-	protected $repository;
-	
-	
-	public function __construct(ServiceLocatorInterface $serviceManager, $repository)
+	public function createService(ServiceLocatorInterface $serviceLocator)
 	{
-		// Service manager
-		$this->serviceManager = $serviceManager;
-		// Now for the repository
-		$this->entityManager = $serviceManager->get('Doctrine\ORM\EntityManager');
-		$this->repository = $this->entityManager->getRepository($repository);
+		$config = $serviceLocator->get('Config');
+		$config = isset($config['blog']) ? $config['blog'] : array();
+		
+		// Set defaults
+		// Default admin route
+		if (!isset($config['admin_route'])) {
+			$config['admin_route'] = 'blog/admin';
+		}
+		
+        return new Config($config, false);
 	}
-	
-	/**
-	 * Get the repository of this service.
-	 * 
-	 * @return Doctrine\ORM\EntityRepository
-	 */
-	public function getRepository()
-	{
-		return $this->repository;
-	}
-	
 }

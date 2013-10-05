@@ -104,6 +104,7 @@ class Module implements
 				'Blog\Service\PostService'     => 'Blog\Service\Factory\PostServiceFactory',
 				'Blog\Service\OptionService'   => 'Blog\Service\Factory\OptionServiceFactory',
 				'Blog\Service\LanguageService' => 'Blog\Service\Factory\LanguageServiceFactory',
+				'Blog\Config'                  => 'Blog\Service\Factory\ConfigFactory',
 			),
 		);
 	}

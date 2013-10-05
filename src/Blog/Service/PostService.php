@@ -179,7 +179,7 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 	{
 		// Set dates
 		$now = time();
-		$post->date_modified = new DateTime(date('Y-m-d H:i:s', $now));
+		$post->date_modified = new \DateTime(date('Y-m-d H:i:s', $now));
 		if ((strcasecmp($post->getStatus(), 'publish') === 0) && (empty($post->date_published))) {
 			$post->date_published = new \DateTime(date('Y-m-d H:i:s', $now));
 		}
