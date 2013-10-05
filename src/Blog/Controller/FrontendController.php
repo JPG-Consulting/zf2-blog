@@ -61,6 +61,9 @@ class FrontendController extends AbstractActionController
 			return;
     	}
     	
+    	// Get the author data
+    	
+    	
     	// Set the title to the post title
     	$renderer = $this->getServiceLocator()->get('Zend\View\Renderer\PhpRenderer');
     	$renderer->headTitle($post->getTitle());

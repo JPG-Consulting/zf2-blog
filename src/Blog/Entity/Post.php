@@ -76,7 +76,7 @@ class Post
      * 
      * @ORM\Column(type="string", length=20)
      */
-    public $type = 'post';
+    public $type = 'BlogPosting';
     
     /**
      * @var string

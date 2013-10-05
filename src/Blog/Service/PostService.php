@@ -112,7 +112,6 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 	 *     offset           => 0
 	 *     orderby          => 'post_date'
 	 *     order            => 'DESC'
-	 *     post_type        => 'post'
 	 *     post_status      => 'publish'
 	 * 
 	 * @param array $args
@@ -122,8 +121,8 @@ class PostService extends AbstractEntityService implements EventManagerAwareInte
 		// Criteria...
 		$criteria = array(
 			'status'   => isset($args['post_status']) ? $args['post_status'] : 'publish',
-			'type'     => isset($args['post_type'])   ? $args['post_type']   : 'post',
 		);
+		// TODO: if published make sure the publishDate complies
 		
 		// Language
 		if (!isset($args['language'])) {
