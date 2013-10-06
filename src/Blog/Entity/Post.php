@@ -208,4 +208,8 @@ class Post
     	return $this->date_published;
     }
     
+    public function getAuthor()
+    {
+    	return $this->author;
+    }
 }

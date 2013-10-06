@@ -1,0 +1,37 @@
+
+/* blog-post-meta ====================================== */
+
+.blog-post-meta {
+	margin-bottom:1em;
+	margin-bottom:1em;
+}
+.blog-post-meta:after {
+	clear:both;
+	content:" ";
+	display:block;
+	height:0;
+	overflow:hidden;
+}
+
+.blog-post-meta a {
+	color: #999999;
+}
+
+.blog-post-meta .blog-icons18 {
+	float:left;
+}
+
+.blog-post-meta .author-avatar {
+	vertical-align: top;
+	border-radius: 3px;
+}
+
+/* Icons =============================================== */
+
+.blog-icons18 {
+	background:url(../images/blog/icons18.png) no-repeat;
+	display:block;
+	height:18px!important;
+	width:18px!important;
+}
+

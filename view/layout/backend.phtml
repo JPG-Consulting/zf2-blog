@@ -11,251 +11,46 @@
         ?>
 
         <!-- Le styles -->
-        <?php echo $this->headLink() ?>
+        <?php echo $this->headLink()
+                        ->prependStylesheet($this->basePath() . '/css/blog-admin.css');
+         ?>
 
         <!-- Scripts -->
         <?php echo $this->headScript(); ?>
 
-		<?php
-			/**
-			 * I hate inline css...
- 			 * ...but I needed to set a style so it doesn't look that 
- 			 * awfull out of the box
-			 */
-		?>
-		<style>
-			html, body {
-				margin:0;
-				padding:0;
-			}
-			.container {
-				margin:0 auto;
-				padding:1em;
-				width:100%;
-				max-width:1024px;
-			}
-			.pagination {
-				margin-top: 60px;
-				font-family: helvetica, arial, freesans, clean, sans-serif;
-				margin: 7px 0;
-				display: inline-block;
-				overflow: hidden;
-			}
-			.pagination a+a, .pagination a+span, .pagination span+a, .pagination span+span {
-				margin-left: -1px;
-				box-shadow: inset 1px 0 0 rgba(255,255,255,0.2);
-			}
-			.pagination a, .pagination span {
-				position: relative;
-				float: left;
-				padding: 3px 10px;
-				color: #555;
-				font-size: 13px;
-				text-decoration: none;
-				text-shadow: 0 1px 0 #fff;
-				background-color: #eaeaea;
-				background-image: -moz-linear-gradient(#fafafa, #eaeaea);
-				background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
-				background-image: linear-gradient(#fafafa, #eaeaea);
-				background-repeat: repeat-x;
-				border: 1px solid #ddd;
-				border-bottom: 1px solid #c5c5c5;
-			}
-			.pagination a.prev_page, .pagination a.next_page, .pagination span.prev_page, .pagination span.next_page {
-				font-size: 9px;
-				line-height: 18px;
-			}
-			.pagination a, .pagination span {
-				line-height: 18px;
-			}
-			.pagination a:first-child, .pagination span:first-child {
-				border-top-left-radius: 3px;
-				border-bottom-left-radius: 3px;
-			}
-			.pagination a:last-child, .pagination span:last-child {
-				border-top-right-radius: 3px;
-				border-bottom-right-radius: 3px;
-			}
-			.pagination a.current, .pagination a.current:hover, .pagination span.current, .pagination span.current:hover {
-				color: #fff;
-				font-weight: bold;
-				text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
-				background-color: #9e9e9e;
-				background-image: -moz-linear-gradient(#767676, #9e9e9e);
-				background-image: -webkit-linear-gradient(#767676, #9e9e9e);
-				background-image: linear-gradient(#767676, #9e9e9e);
-				background-repeat: repeat-x;
-				border-color: #686868;
-			}
-			.pagination a:hover, .pagination a:active, .pagination span:hover, .pagination span:active {
-				color: #fff;
-				text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
-				background-color: #3072b3;
-				background-image: -moz-linear-gradient(#599bdc, #3072b3);
-				background-image: -webkit-linear-gradient(#599bdc, #3072b3);
-				background-image: linear-gradient(#599bdc, #3072b3);
-				background-repeat: repeat-x;
-				border-color: #2a65a0;
-			}
-			.pagination a.disabled, .pagination a.disabled:hover, .pagination a.gap, .pagination a.gap:hover, .pagination span.disabled, .pagination span.disabled:hover, .pagination span.gap, .pagination span.gap:hover {
-				color: #bbb;
-				cursor: default;
-				text-shadow: none;
-				background-color: #eaeaea;
-				background-image: -moz-linear-gradient(#fafafa, #eaeaea);
-				background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
-				background-image: linear-gradient(#fafafa, #eaeaea);
-				background-repeat: repeat-x;
-				border-color: #ddd #ddd #c5c5c5;
-			}
-			#global-header {
-				background-color: #f3f3f3;
-				background-image: -moz-linear-gradient(#f9f9f9, #f3f3f3);
-				background-image: -webkit-linear-gradient(#f9f9f9, #f3f3f3);
-				background-image: linear-gradient(#f9f9f9, #f3f3f3);
-				background-repeat: repeat-x;
-				text-shadow: 0 1px 0 #fff;
-				border-bottom: 1px solid #e5e5e5;
-				height:41px;
-			}
-			#user-links {
-				float: right;
-				margin: 0;
-				padding: 0;
-				list-style: none;
-			}
-			#user-links>li {
-				position: relative;
-				float: left;
-				margin-left: 5px;
-			}
-			#user-links>li>a {
-				display: block;
-				padding: 5px;
-				font-size: 13px;
-				color: #333333;
-				transition: all 0.1s ease-in;
-				-webkit-transition: all 0.1s ease-in 0;
-				text-decoration:none;
-			}
-			#blog-nav {
-				float:left;
-				margin:0;
-				padding:0;
-				width:23%;
-				margin-right:2%;
-			}
-			#blog-nav .menu-container {
-				float: none;
-				margin-bottom: 30px;
-				float: left;
-				width: 100%;
-				padding: 3px;
-				background: #efefef;
-				border-radius: 2px;
-			}
-			#blog-nav .menu {
-				background: #fafafb;
-				border-radius: 2px;
-				border: 1px solid #d8d8d8;
-				list-style: none;
-				padding:0;
-				margin:0;
-			}
-			#blog-nav .menu li:first-child {
-				border-top: none;
-			}
-			#blog-nav .menu li {
-				border-bottom: 1px solid #eee;
-				border-top: 1px solid #fff;
-			}
-			#blog-nav .menu li a {
-				display: block;
-				padding: 8px 10px 8px 8px;
-				text-shadow: 0 1px 0 #fff;
-				border-left: 2px solid #fafafb;
-				text-decoration:none;
-				color:#464646;
-			}
-			#blog-nav .menu li a:hover {
-				background: #fdfdfe;
-			}
-			#blog-content {
-				float:left;
-				margin:0;
-				padding:0;
-				width:75%;
-			}
-			#blog-container:after {
-				content:".";
-				clear:both;
-				display:block;
-				height:0;
-				padding:0;
-				margin:0;
-				overflow: hidden;
-			}
-			
-			.alert {
-				border-radius: 5px;
-				padding:1.625em;
-			  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
-			  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-			  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-			}
-			
-			.alert-success {
-			  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#dff0d8), to(#c8e5bc));
-			  background-image: -webkit-linear-gradient(top, #dff0d8, 0%, #c8e5bc, 100%);
-			  background-image: -moz-linear-gradient(top, #dff0d8 0%, #c8e5bc 100%);
-			  background-image: linear-gradient(to bottom, #dff0d8 0%, #c8e5bc 100%);
-			  background-repeat: repeat-x;
-			  border-color: #b2dba1;
-			  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdff0d8', endColorstr='#ffc8e5bc', GradientType=0);
-			}
-			
-			.alert-info {
-			  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#d9edf7), to(#b9def0));
-			  background-image: -webkit-linear-gradient(top, #d9edf7, 0%, #b9def0, 100%);
-			  background-image: -moz-linear-gradient(top, #d9edf7 0%, #b9def0 100%);
-			  background-image: linear-gradient(to bottom, #d9edf7 0%, #b9def0 100%);
-			  background-repeat: repeat-x;
-			  border-color: #9acfea;
-			  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd9edf7', endColorstr='#ffb9def0', GradientType=0);
-			}
-			
-			.alert-warning {
-			  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#fcf8e3), to(#f8efc0));
-			  background-image: -webkit-linear-gradient(top, #fcf8e3, 0%, #f8efc0, 100%);
-			  background-image: -moz-linear-gradient(top, #fcf8e3 0%, #f8efc0 100%);
-			  background-image: linear-gradient(to bottom, #fcf8e3 0%, #f8efc0 100%);
-			  background-repeat: repeat-x;
-			  border-color: #f5e79e;
-			  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffcf8e3', endColorstr='#fff8efc0', GradientType=0);
-			}
-			
-			.alert-danger {
-			  background-image: -webkit-gradient(linear, left 0%, left 100%, from(#f2dede), to(#e7c3c3));
-			  background-image: -webkit-linear-gradient(top, #f2dede, 0%, #e7c3c3, 100%);
-			  background-image: -moz-linear-gradient(top, #f2dede 0%, #e7c3c3 100%);
-			  background-image: linear-gradient(to bottom, #f2dede 0%, #e7c3c3 100%);
-			  background-repeat: repeat-x;
-			  border-color: #dca7a7;
-			  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff2dede', endColorstr='#ffe7c3c3', GradientType=0);
-			}
-		</style>
     </head>
     <body>
-    	<div id="global-header">
+    	<div class="header">
     		<div class="container">
-    			<a href="<?php echo $this->url('blog') ?>" style="float:left;display:inline-block!important;text-decoration:none;">
-	    			<strong style="font-size:15px;color:#009900;"><?php echo $this->translate("ZF2 Blog")?></strong>
-    			</a>
+    			<a href="<?php echo $this->blogAdminUrl() ?>" id="header-logo"><span></span></a>
+    			<ul id="top-nav">
+    				<!-- <li class="categories"><a href=""><?php echo $this->translate('Categories')?></a></li>  -->
+    				<li class="posts"><a href="<?php echo $this->blogAdminUrl('posts') ?>"><?php echo $this->translate('Posts')?></a></li>
+    			</ul>
     			<ul id="user-links">
     				<li>
+    					<a href="<?php echo $this->url('zfcuser');?>" class="name">
+    						<?php echo $this->gravatar($this->zfcUserIdentity()->getEmail(), array('img_size' => 20)); ?>
+    						<?php echo $this->zfcUserDisplayName() ?>
+    					</a>
+    				</li>
+    				<li>
+    					<a href="<?php echo $this->blogAdminUrl('posts/new');?>" id="new-post">
+    						<span class="blog-admin-icons new-post"></span>
+    					</a>
+    				</li>
+    				<!-- TODO: Should be only if allowed -->
+    				<!-- 
+    				<li>
+    					<a href="" id="settings">
+    						<span class="blog-admin-icons settings"></span>
+    					</a>
+    				</li>
+    				 -->
+    				<li>
     					<a href="<?php echo $this->url('zfcuser/logout');?>" id="logout">
-		          			<?php echo $this->translate('Sign Out')?>
-		        		</a>
+    						<span class="blog-admin-icons logout"></span>
+    					</a>
     				</li>
     			</ul>
     			
@@ -263,28 +58,15 @@
     	</div>
         <div class="container">
         	<div id="blog-container">
-	        	<div id="blog-nav">
-	        		<div class="menu-container" data-pjax="">
-					    <ul class="menu">
-					      <li><a href="<?php echo $this->blogAdminUrl('posts');?>"><?php echo $this->translate("Posts") ?></a></li>
-					      <!-- 
-					      <li><a href="<?php //echo $this->blogAdminUrl('categories');?>"><?php echo $this->translate("Categories") ?></a></li>
-					      <li><a href="<?php //echo $this->blogAdminUrl('settings');?>"><?php echo $this->translate("Settings") ?></a></li>
-					       -->
-					    </ul>
-					</div>
-	        	</div>
-	        	<div id="blog-content">
 	            <?php echo $this->content; ?>
+            </div>
+            <hr style="margin-top:3em;">
+	        <footer>
+	        	<div class="container">
+	                <p>&copy; 2005 - <?php echo date('Y') ?> by JPG-Consulting. <?php echo $this->translate('All rights reserved.') ?></p>
 	            </div>
-            </div>
+	        </footer>
         </div> <!-- /container -->
-        <hr>
-        <footer>
-        	<div class="container">
-                <p>&copy; 2005 - <?php echo date('Y') ?> by JPG-Consulting. <?php echo $this->translate('All rights reserved.') ?></p>
-            </div>
-        </footer>
         <?php echo $this->inlineScript() ?>
     </body>
 </html>

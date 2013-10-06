@@ -43,9 +43,9 @@ php composer.phar require jpg-consulting/zf2-blog
 ```
 
 ### Post installation
-1. Enable it in your `application.config.php`
+#### 1 - Enable it in your `application.config.php`
 
-    ```php
+```php
     <?php
     return array(
         'modules' => array(
@@ -60,7 +60,30 @@ php composer.phar require jpg-consulting/zf2-blog
     );
 ``` 
 
-2. Import the SQL
+#### 2 - Import the SQL
 
-3. Setting the administrative route
+The SQL data is located in the `data/database` folder.
 
+Keep in mind this dumps do NOT include user tables. For user tables follow the installation steps of `ZfcUser` or any of its adapters. We recomend using `ZfcUserDoctrineORM`.
+
+#### 3 - Install the skin (Recommended)
+
+Although this step i not necesary it is strongly suggested as the module looks quite ugly when unthemed.
+
+The default theme is inside the `data/skin`. Just copy the contents of the `public` directory into your public directory in order for css, image and Javascript files to be accesible.
+
+Finally add the style sheet `css/blog.css` to your public layout.
+
+
+## TODO
+
+- Fix bug when editing a post (Language not set)
+- Add pagination for post in the front end
+- Crete the settings page to make them available
+- Create a setting page for languages (Probably tabs on top)
+- Create a locale plugin so the frontend starts working multi-lingual (Right now only default language)
+- Add Categories
+- Add Tags?
+- Add canonical url
+- Markup or WYSIWYG editor switcher (Enable per user settings)
+- User management (Route should be configurable in case it integrates with other modules, ie ZfcAdmin)

@@ -1,9 +1,18 @@
+<?php 
+	$author      = $this->getPostAuthor($this->post->getAuthor());
+	$author_name = $this->zfcUserDisplayName($author);
+?>
 <article itemscope itemtype="http://schema.org/BlogPosting">
 	<h1 itemprop="name headline"><?php echo $this->post->getTitle()?></h1>
+	<div class="blog-post-meta">
+		<span class="blog-icons18 blog-icons18-calendar"></span>
+		<time datetime="<?php echo $this->post->getDatePublished()->format('Y-m-d\TH:i:sP')?>" itemprop="datePublished"><?php echo $this->post->getDatePublished()->format('F j, Y')?></time>
+		&nbsp;
+		<?php echo $this->gravatar($author->getEmail(), array('img_size' => 18), array('alt' => $author_name, 'class' => 'author-avatar')) . ' ' . $author_name ?>
+	</div>
 	<div itemprop="articleBody"><?php echo $this->post->getContent(); ?></div>
 	<meta itemprop="inLanguage" content = "<?php echo $this->post->getLanguage() ?>" /> 
 	<meta itemprop="dateCreated" content="<?php echo $this->post->getDateCreated()->format('Y-m-d') ?>">
 	<meta itemprop="dateModified" content="<?php echo $this->post->getDateModified()->format('Y-m-d') ?>">
-	<meta itemprop="datePublished" content="<?php echo $this->post->getDatePublished()->format('Y-m-d') ?>">
 	<link itemprop="url" href="<?php echo $this->serverUrl() . $this->getPostUrl($this->post->getSlug()) ?>" />
 </article>

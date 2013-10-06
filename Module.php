@@ -24,6 +24,8 @@
  */
 namespace Blog;
 
+use Blog\View\Helper\GetPostAuthor;
+
 use Blog\View\Helper\BlogAdminUrl;
 
 use Zend\ModuleManager\ModuleManagerInterface;
@@ -120,6 +122,12 @@ class Module implements
 	{
 		return array(
 			'factories' => array(
+				'getPostAuthor' => function($helperPluginManager) {
+					$serviceLocator = $helperPluginManager->getServiceLocator();
+					$viewHelper = new GetPostAuthor();
+					$viewHelper->setServiceManager($serviceLocator);
+					return $viewHelper;
+				},
 				'getPostUrl' => function($helperPluginManager) {
 					$serviceLocator = $helperPluginManager->getServiceLocator();
 					$router = $serviceLocator->get('Router');
