@@ -61,3 +61,6 @@ php composer.phar require jpg-consulting/zf2-blog
 ``` 
 
 2. Import the SQL
+
+3. Setting the administrative route
+

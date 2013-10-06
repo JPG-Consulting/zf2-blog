@@ -24,6 +24,12 @@
  */
 namespace Blog\Controller;
 
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
+
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+
+use Zend\Paginator\Paginator;
+
 use Zend\View\Model\ViewModel;
 
 use Blog\Entity\Post as PostEntity;
@@ -45,6 +51,42 @@ class BackendController extends AbstractActionController
 			$this->postService = $this->getServiceLocator()->get('Blog\Service\PostService');
 		}
 		return $this->postService;
+	}
+	
+	public function listPostAction()
+	{
+		$pageNumber      = $this->params()->fromQuery('page', '1');
+		$language        = $this->params()->fromQuery('hl', null);
+		if (!preg_match('/^[0-9]$/', $pageNumber)) {
+			$pageNumber = '1';
+		}
+		
+		$route = $this->serviceLocator->get('Blog\Config')->get('admin_route');
+		$route = $route . '/posts';
+		
+		$options = $this->serviceLocator->get('Blog\Service\OptionService');
+		if (empty($language)) {
+			$language = $options->get('default_language_code');
+		}
+		
+		$pageNumber = (int)$pageNumber;
+
+		$postRepository = $this->serviceLocator->get('Blog\Service\PostService')->getRepository();
+		$queryBuilder = $postRepository->createQueryBuilder('post');
+		// TODO: Show all or filter by language?
+		//$queryBuilder->where('post.lang = :language')
+		//             ->setParameter('language', $language);
+		             
+		$adapter = new DoctrineAdapter( new ORMPaginator($queryBuilder, $fetchJoinCollection=false) );
+		
+		$paginator = new Paginator($adapter);
+		$paginator->setCurrentPageNumber($pageNumber)
+		          ->setItemCountPerPage(10);
+		
+		return new ViewModel(array(
+			'paginator' => $paginator,
+			'route'     => $route
+		));
 	}
 	
 	public function newPostAction()

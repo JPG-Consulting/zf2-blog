@@ -1,3 +1,91 @@
+<?php
+/**
+ * I hate inline css...
+ * ...but I needed to set a style so it doesn't look that 
+ * awfull out of the box
+ */ 
+?>
+<style>
+	#post-editor {
+		margin: 10px 0 50px;
+		padding: 10px;
+		background-color: #f9f9f9;
+		border: 1px solid #e4e4e4;
+		border-radius: 5px;
+	}
+	#post-editor label {
+		display:block;
+		font-size:13px;
+		font-weight:bold;
+		margin-top:1em;
+	}
+	#post-editor-slug, #post-editor-title, #post-editor-content, #post-editor-excerpt {
+		display: block;
+		width: 100%;
+	}
+	#post-editor-content {
+		font-family: Monaco, "Liberation Mono", Courier, monospace;
+		line-height: 22px;
+		margin: 13px 0 5px;
+		height: 390px;
+		resize: vertical;
+	}
+	#post-editor-buttons-panel {
+		padding-top:1.625em;
+	}
+	#post-editor-buttons-panel input[type="submit"] {
+		color: #fff;
+		text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+		background-color: #60b044;
+		background-image: -moz-linear-gradient(#8add6d, #60b044);
+		background-image: -webkit-linear-gradient(#8add6d, #60b044);
+		background-image: linear-gradient(#8add6d, #60b044);
+		background-repeat: repeat-x;
+		border-color: #5ca941;
+		outline: none;
+		position: relative;
+		display: inline-block;
+		padding: 7px 15px;
+		font-size: 13px;
+		font-weight: bold;
+		white-space: nowrap;
+		border-radius: 3px;
+		border: 1px solid #5ca941;
+		box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+		vertical-align: middle;
+		cursor: pointer;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		-webkit-appearance: none;
+	}
+	#post-editor input[type="text"],  #post-editor input[type="password"], #post-editor textarea {
+		min-height: 34px;
+		padding: 7px 8px;
+		outline: none;
+		color: #333;
+		background-color: #fff;
+		background-repeat: no-repeat;
+		background-position: right center;
+		border: 1px solid #ccc;
+		border-radius: 3px;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		transition: all 0.15s ease-in;
+		-webkit-transition: all 0.15s ease-in 0;
+		vertical-align: middle;
+	}
+	
+	#post-editor input[type="text"]:focus,  #post-editor input[type="password"]:focus, #post-editor textarea:focus {
+		border-color: #51a7e8;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,0.075),0 0 5px rgba(81,167,232,0.5);
+	}
+</style>
+
 <h1><?php echo $this->translate('New Post') ?></h1>
 <?php
 
@@ -6,7 +94,9 @@ $form     = $this->form;
 $post     = $form->get('post');
 
 $form->prepare();
-
+?>
+<div id="post-editor">
+<?php 
 echo $this->form()->openTag($form);
 
 echo "<div>" . $this->formRow($post->get('language')) . "</div>";
@@ -16,6 +106,12 @@ echo "<div id=\"post_slug\">" . $this->formRow($post->get('slug')) . "</div>";
 //echo $this->formRow($post->get('categories'));
 echo "<div>" . $this->formRow($post->get('content')) . "</div>";
 echo "<div id=\"post_excerpt\">" . $this->formRow($post->get('excerpt')) . "</div>";
-echo "<div>" . $this->formElement($form->get('csrf'));
-echo "<div>" . $this->formRow($form->get('submit')) . "</div>";
+echo $this->formElement($form->get('csrf'));
+?>
+<div id="post-editor-buttons-panel">
+<?php echo $this->formRow($form->get('submit')) ?>
+</div>
+<?php 
 echo $this->form()->closeTag();
+?>
+</div>

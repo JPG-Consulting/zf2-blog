@@ -51,8 +51,6 @@ class GetPostUrl extends AbstractHelper
      */
     public function __invoke($slug)
     {
-    	//return "moneo";
-    	
         if (null === $this->router) {
             throw new Exception\RuntimeException('No RouteStackInterface instance provided');
         }

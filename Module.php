@@ -24,6 +24,12 @@
  */
 namespace Blog;
 
+use Blog\View\Helper\BlogAdminUrl;
+
+use Zend\ModuleManager\ModuleManagerInterface;
+
+use Zend\ModuleManager\Feature\InitProviderInterface;
+
 use Blog\View\Helper\GetPostUrl;
 
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
@@ -41,7 +47,8 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 class Module implements 
 	AutoloaderProviderInterface, 
 	ConfigProviderInterface, 
-	FormElementProviderInterface,
+	FormElementProviderInterface, 
+	InitProviderInterface,
 	ServiceProviderInterface, 
 	ViewHelperProviderInterface
 {
@@ -120,7 +127,42 @@ class Module implements
 					$viewHelper->setRouter($router);
 					return $viewHelper;
 				},
+				'blogAdminUrl' => function($helperPluginManager) {
+					$serviceLocator = $helperPluginManager->getServiceLocator();
+					$router = $serviceLocator->get('Router');
+					$viewHelper = new BlogAdminUrl();
+					$viewHelper->setServiceManager( $serviceLocator );
+					$viewHelper->setRouter($router);
+					return $viewHelper;
+				}
 			)
 		);
+	}
+	
+	public function init(ModuleManagerInterface $manager)
+	{
+		$sharedEventManager  = $manager->getEventManager()->getSharedManager();
+		
+		// Load the backend template if we are using the backend
+		// A bit redundant... but it's late at night...
+		$sharedEventManager->attach(__NAMESPACE__, \Zend\Mvc\MvcEvent::EVENT_DISPATCH, function($e) {
+			$controller = $e->getTarget();
+			$controllerClass = get_class($controller);
+            
+			if (strcasecmp($controllerClass, 'Blog\Controller\BackendController') === 0) {
+				// Check if user is logged in
+				$sm = $e->getApplication()->getServiceManager();
+				$auth = $sm->get('zfcuser_auth_service');
+				if ($auth->hasIdentity()) {
+					$controller->layout('blog/backend/layout');
+				} else {
+					$controller->plugin('redirect')->toRoute('zfcuser/authenticate');
+					$e->stopPropagation();
+        			return false;
+				}
+			}
+            
+		}, 10000);
+		
 	}
 }

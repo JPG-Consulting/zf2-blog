@@ -80,6 +80,7 @@ class Post extends Fieldset //implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'required' => 'required',
+            	'id'       => 'post-editor-title'
             ),
         ));
 
@@ -89,6 +90,9 @@ class Post extends Fieldset //implements InputFilterProviderInterface
             'options'    => array(
                 'label' => 'Slug',
             ),
+            'attributes' => array(
+            	'id'       => 'post-editor-slug'
+            ),
         ));
 
         $this->add(array(
@@ -96,6 +100,9 @@ class Post extends Fieldset //implements InputFilterProviderInterface
             'type'       => 'Zend\Form\Element\Textarea',
             'options'    => array(
                 'label' => 'Excerpt',
+            ),
+            'attributes' => array(
+            	'id'       => 'post-editor-excerpt'
             ),
         ));
 
@@ -107,6 +114,7 @@ class Post extends Fieldset //implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'required' => 'required',
+            	'id'       => 'post-editor-content'
             ),
         ));
     }

@@ -80,7 +80,7 @@ return array(
 		                    'defaults' => array(
 		                        '__NAMESPACE__' => 'Blog\Controller',
 		                        'controller'    => 'Backend',
-		                        'action'        => 'newPost',
+		                        'action'        => 'index',
 		                    ),
 		                ),
 		                'may_terminate' => true,
@@ -92,7 +92,7 @@ return array(
 				                    'defaults' => array(
 				                        '__NAMESPACE__' => 'Blog\Controller',
 				                        'controller'    => 'Backend',
-				                        'action'        => 'newPost',
+				                        'action'        => 'listPost',
 				                    ),
 				                ),
 				                'may_terminate' => true,
@@ -145,6 +145,9 @@ return array(
         ),
     ),
     'view_manager' => array(
+    	'template_map' => array(
+            'blog/backend/layout'           => __DIR__ . '/../view/layout/backend.phtml',
+        ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
