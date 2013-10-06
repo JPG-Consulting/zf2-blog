@@ -162,6 +162,8 @@ class BackendController extends AbstractActionController
             } else {
             	$status = false;
             }
+    	} else {
+    		//$form->get('post')->get('language')->setValue($postEntity->getLanguage());
     	}
     	
     	return new ViewModel(array(

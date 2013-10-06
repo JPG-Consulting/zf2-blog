@@ -150,4 +150,18 @@ class Post extends Fieldset //implements InputFilterProviderInterface
             ),
         );
     }
+    
+    public function populateValues($data)
+    {
+    	// Small hack to populate language
+    	// TODO: Fin a cleaner way
+    	$obj = $this->getObject();
+    	if (!empty($obj)) {
+    		if (!isset($data['language'])) {
+    			$data['language'] = $obj->lang;
+    		}
+    	}
+    	
+    	return parent::populateValues($data);
+    }
 }
