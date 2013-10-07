@@ -1,7 +1,7 @@
 <div id="blog-admin-section-header">
 	<div class="admin-icon45 admin-icon45-posts"><br></div>
 	<h1><?php echo $this->translate('Posts')?></h1>
-	<a href="<?php echo $this->blogAdminUrl('posts/new');?>" id="new-post-link" class="button minibutton primary"><?php echo $this->translate("New Post")?></a>
+	<a href="<?php echo $this->blogAdminUrl('post-new');?>" id="new-post-link" class="button minibutton primary"><?php echo $this->translate("New Post")?></a>
 </div>
 
 <div id="blog-items-table">
@@ -14,7 +14,7 @@
 	</tr>
 	<?php foreach ($this->paginator as $post) : ?>
 		<?php 
-			$edit_uri = $this->blogAdminUrl('posts/edit', array(), array('query' => array('s'=>$post->getSlug(), 'hl' => $post->getLanguage())));
+			$edit_uri = $this->blogAdminUrl('post-edit', array('s'=>$post->getSlug(), 'hl' => $post->getLanguage()));
 			$author   = $this->getPostAuthor($post->getAuthor()); 
 		?>
 		<tr>
@@ -33,10 +33,10 @@ echo $this->paginationControl(
     // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
     'sliding',
     // the partial to use to render the control
-    array('partial/paginator.phtml', 'Blog'),
+    array('blog/backend/partial_paginator.phtml', 'Blog'),
     // the route to link to when a user clicks a control link
     array(
-        'route' => $this->route
+        'action' => 'posts'
     )
 );
 ?>

@@ -24,11 +24,11 @@
  */
 namespace Blog\View\Helper;
 
-use Zend\View\Helper\Url;
+use Zend\View\Helper\AbstractHelper;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class BlogAdminUrl extends Url implements ServiceManagerAwareInterface
+class BlogAdminUrl extends AbstractHelper implements ServiceManagerAwareInterface
 {
 	/**
      * ServiceManager instance.
@@ -36,23 +36,55 @@ class BlogAdminUrl extends Url implements ServiceManagerAwareInterface
      * @var ServiceManager
      */
     protected $serviceManager;
+    
+    /**
+     * RouteStackInterface instance.
+     *
+     * @var Zend\Mvc\Router\RouteStackInterface;
+     */
+    protected $router;
 
-    public function __invoke($name = null, $params = array(), $options = array(), $reuseMatchedParams = false)
+    //public function __invoke($action = null, $query = array(), $reuseMatchedParams = false)
+    public function __invoke($action = null, $query = array())
     {	
 		$config = $this->serviceManager->get('Blog\Config');
 		$admin_route = $config->get('admin_route');	
-
-		if (!empty($name)) {
-			$name = $admin_route . '/' . $name;
+		
+		if (!empty($action)) {
+			$name = $admin_route . '/default';
 		} else {
+			$action = 'index';
 			$name = $admin_route;
 		}
-    	return parent::__invoke($name, $params, $options, $reuseMatchedParams);
+		
+		
+		$router = $this->getRouter();
+		//if ($router->hasRoute($name)) {
+		//	$route = $router->getRoute($name);
+			
+			$options = array('name' => $name);
+			if (!empty($query)) {
+				$options['query'] = $query;
+			}
+			// assemble($params = array(), $options = array())
+			return $router->assemble(array('action' => $action), $options);	
+		//} else {
+	//		return "WTF???? " . $name;
+		//}
     }
 
     public function setServiceManager(ServiceManager $serviceManager)
     {
     	$this->serviceManager = $serviceManager;
+    	return $this;
+    }
+    
+    public function getRouter()
+    {
+    	if (null === $this->router) {
+    		$this->router = $this->serviceManager->get('Router');
+    	}
+    	return $this->router;
     }
 
 }

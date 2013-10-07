@@ -53,7 +53,7 @@ class BackendController extends AbstractActionController
 		return $this->postService;
 	}
 	
-	public function listPostAction()
+	public function postsAction()
 	{
 		$pageNumber      = $this->params()->fromQuery('page', '1');
 		$language        = $this->params()->fromQuery('hl', null);
@@ -62,7 +62,7 @@ class BackendController extends AbstractActionController
 		}
 		
 		$route = $this->serviceLocator->get('Blog\Config')->get('admin_route');
-		$route = $route . '/posts';
+		$route = $route . '/default';
 		
 		$options = $this->serviceLocator->get('Blog\Service\OptionService');
 		if (empty($language)) {
@@ -89,7 +89,7 @@ class BackendController extends AbstractActionController
 		));
 	}
 	
-	public function newPostAction()
+	public function postNewAction()
     {
         $postEntity = new PostEntity();
         $form       = $this->getServiceLocator()->get('FormElementManager')->get('Blog\Form\CreatePost');
@@ -120,7 +120,7 @@ class BackendController extends AbstractActionController
         ));
     }
     
-    public function editPostAction()
+    public function postEditAction()
     {
     	$request  = $this->getRequest();
     	$slug     = $this->params()->fromQuery('s', null);

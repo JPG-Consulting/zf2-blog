@@ -85,42 +85,20 @@ return array(
 		                ),
 		                'may_terminate' => true,
 		                'child_routes' => array(
-		                	'posts' => array(
-		                		'type'    => 'Literal',
-				                'options' => array(
-				                    'route'    => '/posts',
-				                    'defaults' => array(
-				                        '__NAMESPACE__' => 'Blog\Controller',
-				                        'controller'    => 'Backend',
-				                        'action'        => 'listPost',
-				                    ),
-				                ),
-				                'may_terminate' => true,
-				                'child_routes' => array(
-				                	'new' => array(
-				                		'type'    => 'Literal',
-						                'options' => array(
-						                    'route'    => '/new',
-						                    'defaults' => array(
-						                        '__NAMESPACE__' => 'Blog\Controller',
-						                        'controller'    => 'Backend',
-						                        'action'        => 'newPost',
-						                    ),
-						                ),
-				                	),
-				                	'edit' => array(
-				                		'type'    => 'Literal',
-						                'options' => array(
-						                    'route'    => '/edit',
-						                    'defaults' => array(
-						                        '__NAMESPACE__' => 'Blog\Controller',
-						                        'controller'    => 'Backend',
-						                        'action'        => 'editPost',
-						                    ),
-						                ),
-				                	)
-				                )
-		                	)
+		                	/* Simplify Routes */
+		                	'default' => array(
+		                		'type'    => 'Regex',
+								'options' => array(
+									'regex' => '/(?<action>[a-zA-Z0-9-]+)\.php',
+									'spec' => '/%action%.php',
+		                			'defaults' => array(
+			                        	'__NAMESPACE__' => 'Blog\Controller',
+			                        	'controller'    => 'Backend',
+		                				'action'        => 'index'
+			                    	),
+								),
+		                	),	
+		                	
 		                ),
 		            )
                 ),
