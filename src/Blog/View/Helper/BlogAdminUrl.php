@@ -24,6 +24,7 @@
  */
 namespace Blog\View\Helper;
 
+use Traversable;
 use Zend\View\Helper\AbstractHelper;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
@@ -44,33 +45,26 @@ class BlogAdminUrl extends AbstractHelper implements ServiceManagerAwareInterfac
      */
     protected $router;
 
-    //public function __invoke($action = null, $query = array(), $reuseMatchedParams = false)
-    public function __invoke($action = null, $query = array())
+
+    public function __invoke($params = array(), $options = array())
     {	
-		$config = $this->serviceManager->get('Blog\Config');
-		$admin_route = $config->get('admin_route');	
+    	if (!is_array($params)) {
+            if (!$params instanceof Traversable) {
+                throw new Exception\InvalidArgumentException(
+                    'Params is expected to be an array or a Traversable object'
+                );
+            }
+            $params = iterator_to_array($params);
+        }
+        
+        $config      = $this->serviceManager->get('Blog\Config');
+		$admin_route = $config->get('admin_route') . '/default';		
+		$router      = $this->getRouter();
+        
+		// Set the name of the route
+		$options['name'] = $admin_route;
 		
-		if (!empty($action)) {
-			$name = $admin_route . '/default';
-		} else {
-			$action = 'index';
-			$name = $admin_route;
-		}
-		
-		
-		$router = $this->getRouter();
-		//if ($router->hasRoute($name)) {
-		//	$route = $router->getRoute($name);
-			
-			$options = array('name' => $name);
-			if (!empty($query)) {
-				$options['query'] = $query;
-			}
-			// assemble($params = array(), $options = array())
-			return $router->assemble(array('action' => $action), $options);	
-		//} else {
-	//		return "WTF???? " . $name;
-		//}
+		return $router->assemble($params, $options);
     }
 
     public function setServiceManager(ServiceManager $serviceManager)

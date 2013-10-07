@@ -40,8 +40,8 @@ return array(
                 'options' => array(
                     'route'    => '/blog',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Blog\Controller',
-                        'controller'    => 'Frontend',
+                        '__NAMESPACE__' => 'Blog\Controller\Frontend',
+                        'controller'    => 'Index',
                         'action'        => 'index',
                     ),
                 ),
@@ -67,9 +67,8 @@ return array(
 							'regex' => '/(?<slug>[a-zA-Z0-9-]+)\.html',
 							'spec' => '/%slug%.html',
                 			'defaults' => array(
-	                        	'__NAMESPACE__' => 'Blog\Controller',
-	                        	'controller'    => 'Frontend',
-	                        	'action'        => 'singlePost',
+	                        	'controller'    => 'Post',
+	                        	'action'        => 'index',
 	                    	),
 						),
                 	),
@@ -78,8 +77,8 @@ return array(
 		                'options' => array(
 		                    'route'    => '/admin',
 		                    'defaults' => array(
-		                        '__NAMESPACE__' => 'Blog\Controller',
-		                        'controller'    => 'Backend',
+		                        '__NAMESPACE__' => 'Blog\Controller\Backend',
+		                        'controller'    => 'Index',
 		                        'action'        => 'index',
 		                    ),
 		                ),
@@ -87,13 +86,11 @@ return array(
 		                'child_routes' => array(
 		                	/* Simplify Routes */
 		                	'default' => array(
-		                		'type'    => 'Regex',
+		                		'type'    => 'Segment',
 								'options' => array(
-									'regex' => '/(?<action>[a-zA-Z0-9-]+)\.php',
-									'spec' => '/%action%.php',
+									'route' => '/[:controller[/:action]]',
 		                			'defaults' => array(
-			                        	'__NAMESPACE__' => 'Blog\Controller',
-			                        	'controller'    => 'Backend',
+			                        	'controller'    => 'Index',
 		                				'action'        => 'index'
 			                    	),
 								),
@@ -118,8 +115,10 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Blog\Controller\Frontend' => 'Blog\Controller\FrontendController',
-    		'Blog\Controller\Backend' => 'Blog\Controller\BackendController'
+            'Blog\Controller\Frontend\Index' => 'Blog\Controller\Frontend\IndexController',
+    		'Blog\Controller\Frontend\Post' => 'Blog\Controller\Frontend\PostController',
+    		'Blog\Controller\Backend\Index' => 'Blog\Controller\Backend\IndexController',
+    		'Blog\Controller\Backend\Post' => 'Blog\Controller\Backend\PostController'
         ),
     ),
     'view_manager' => array(

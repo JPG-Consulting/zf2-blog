@@ -155,9 +155,10 @@ class Module implements
 		// A bit redundant... but it's late at night...
 		$sharedEventManager->attach(__NAMESPACE__, \Zend\Mvc\MvcEvent::EVENT_DISPATCH, function($e) {
 			$controller = $e->getTarget();
-			$controllerClass = get_class($controller);
-            
-			if (strcasecmp($controllerClass, 'Blog\Controller\BackendController') === 0) {
+			$reflection =  new \ReflectionClass( get_class($controller) );
+			$controller_namespace  = $reflection->getNamespaceName();
+			
+			if (strcasecmp($controller_namespace, 'Blog\Controller\Backend') === 0) {
 				// Check if user is logged in
 				$sm = $e->getApplication()->getServiceManager();
 				$auth = $sm->get('zfcuser_auth_service');

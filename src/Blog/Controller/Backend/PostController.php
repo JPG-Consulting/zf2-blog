@@ -22,26 +22,27 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
-namespace Blog\Controller;
-
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
-
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-
-use Zend\Paginator\Paginator;
-
-use Zend\View\Model\ViewModel;
+namespace Blog\Controller\Backend;
 
 use Blog\Entity\Post as PostEntity;
-
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Paginator\Paginator;
+use Zend\View\Model\ViewModel;
 
-class BackendController extends AbstractActionController
+
+class PostController extends AbstractActionController
 {
-
+	/**
+	 * Post service instance
+	 * 
+	 * @var Blog\Service\PostService
+	 */
 	protected $postService;
 	
 	/**
+	 * Get the post service
 	 * 
 	 * @return Blog\Service\PostService
 	 */
@@ -53,7 +54,7 @@ class BackendController extends AbstractActionController
 		return $this->postService;
 	}
 	
-	public function postsAction()
+	public function indexAction()
 	{
 		$pageNumber      = $this->params()->fromQuery('page', '1');
 		$language        = $this->params()->fromQuery('hl', null);
@@ -89,7 +90,7 @@ class BackendController extends AbstractActionController
 		));
 	}
 	
-	public function postNewAction()
+	public function newAction()
     {
         $postEntity = new PostEntity();
         $form       = $this->getServiceLocator()->get('FormElementManager')->get('Blog\Form\CreatePost');
@@ -106,7 +107,7 @@ class BackendController extends AbstractActionController
 
 	                // Route to the post edit page
 	                $config = $this->serviceLocator->get('Blog\Config');
-	                return $this->redirect()->toRoute($config->get('admin_route') . '/posts/edit', array(), array('query' => array('s' => $postEntity->getSlug(), 'hl' => $postEntity->getLanguage())));	
+	                return $this->redirect()->toRoute($config->get('admin_route') . '/default', array('controller' => 'post', 'action' => 'edit'), array('query' => array('s' => $postEntity->getSlug(), 'hl' => $postEntity->getLanguage())));	
             	} catch (Exception $e) {
             	}
             }
@@ -120,7 +121,7 @@ class BackendController extends AbstractActionController
         ));
     }
     
-    public function postEditAction()
+    public function editAction()
     {
     	$request  = $this->getRequest();
     	$slug     = $this->params()->fromQuery('s', null);
@@ -171,5 +172,4 @@ class BackendController extends AbstractActionController
            	'status' => $status,
         ));
     }
-
 }

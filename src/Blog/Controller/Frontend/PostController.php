@@ -22,26 +22,17 @@
  * @copyright Copyright (c) 2013 Juan Pedro Gonzalez Gutierrez (http://www.jpg-consulting.com)
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
  */
-namespace Blog\Controller;
+namespace Blog\Controller\Frontend;
 
 
 use Zend\View\Model\ViewModel;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-class FrontendController extends AbstractActionController
+class PostController extends AbstractActionController
 {
-
-	public function IndexAction()
-	{
-		$postService = $this->serviceLocator->get('Blog\Service\PostService');
-		$posts = $postService->getPosts();
-		return new ViewModel(array(
-			'Posts' => $posts
-		));	
-	}
 	
-	public function singlePostAction()
+	public function indexAction()
 	{
 		$slug = $this->params()->fromRoute('slug');
 		
@@ -76,8 +67,4 @@ class FrontendController extends AbstractActionController
 		));
 	}
 	
-	public function categoryAction()
-	{
-		return new ViewModel();
-	}
 }

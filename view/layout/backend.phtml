@@ -25,7 +25,7 @@
     			<a href="<?php echo $this->blogAdminUrl() ?>" id="header-logo"><span></span></a>
     			<ul id="top-nav">
     				<!-- <li class="categories"><a href=""><?php echo $this->translate('Categories')?></a></li>  -->
-    				<li class="posts"><a href="<?php echo $this->blogAdminUrl('posts') ?>"><?php echo $this->translate('Posts')?></a></li>
+    				<li class="posts"><a href="<?php echo $this->blogAdminUrl(array('controller' => 'post', 'action' => 'index')) ?>"><?php echo $this->translate('Posts')?></a></li>
     			</ul>
     			<ul id="user-links">
     				<li>
@@ -35,7 +35,7 @@
     					</a>
     				</li>
     				<li>
-    					<a href="<?php echo $this->blogAdminUrl('post-new');?>" id="new-post">
+    					<a href="<?php echo $this->blogAdminUrl(array('controller' => 'post', 'action' => 'new'));?>" id="new-post">
     						<span class="blog-admin-icons new-post"></span>
     					</a>
     				</li>
