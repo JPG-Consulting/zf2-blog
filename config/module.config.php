@@ -115,10 +115,11 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Blog\Controller\Frontend\Index' => 'Blog\Controller\Frontend\IndexController',
-    		'Blog\Controller\Frontend\Post' => 'Blog\Controller\Frontend\PostController',
-    		'Blog\Controller\Backend\Index' => 'Blog\Controller\Backend\IndexController',
-    		'Blog\Controller\Backend\Post' => 'Blog\Controller\Backend\PostController'
+            'Blog\Controller\Frontend\Index'   => 'Blog\Controller\Frontend\IndexController',
+    		'Blog\Controller\Frontend\Post'    => 'Blog\Controller\Frontend\PostController',
+    		'Blog\Controller\Backend\Index'    => 'Blog\Controller\Backend\IndexController',
+    		'Blog\Controller\Backend\Post'     => 'Blog\Controller\Backend\PostController',
+    		'Blog\Controller\Backend\Settings' => 'Blog\Controller\Backend\SettingsController'
         ),
     ),
     'view_manager' => array(

@@ -39,14 +39,12 @@
     						<span class="blog-admin-icons new-post"></span>
     					</a>
     				</li>
-    				<!-- TODO: Should be only if allowed -->
-    				<!-- 
+    				<!-- TODO: Should be displayed only for admins -->
     				<li>
-    					<a href="" id="settings">
+    					<a href="<?php echo $this->blogAdminUrl(array('controller' => 'settings', 'action' => 'index')) ?>" id="settings">
     						<span class="blog-admin-icons settings"></span>
     					</a>
     				</li>
-    				 -->
     				<li>
     					<a href="<?php echo $this->url('zfcuser/logout');?>" id="logout">
     						<span class="blog-admin-icons logout"></span>
