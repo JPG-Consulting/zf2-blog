@@ -163,7 +163,10 @@ class Module implements
 				$sm = $e->getApplication()->getServiceManager();
 				$auth = $sm->get('zfcuser_auth_service');
 				if ($auth->hasIdentity()) {
-					$controller->layout('blog/backend/layout');
+					$templatePathStack = $sm->get('Zend\View\Resolver\TemplateMapResolver');
+					if ($templatePathStack->has('blog/backend/layout')) {
+						$controller->layout('blog/backend/layout');
+					}
 				} else {
 					$controller->plugin('redirect')->toRoute('zfcuser/authenticate');
 					$e->stopPropagation();
